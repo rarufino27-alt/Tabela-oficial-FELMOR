@@ -1,11 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>FELMOR — Calculadora de Viagens</title>
+<title>FELMOR | Mobilidade Particular</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#06152B">
+<meta name="theme-color" content="#0A1B32">
+<meta name="description" content="FELMOR Mobilidade Particular. Consulte o valor e solicite sua viagem.">
 
 <script src="core/datamanager.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -13,958 +13,1367 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Michroma&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
-/* ==================================================
-   FELMOR — IDENTIDADE VISUAL
-   Azul-marinho | Azul elétrico | Dourado | Prata
-================================================== */
+/* =====================================================
+   FELMOR MOBILITY — DESIGN SYSTEM
+   Redesign visual. Regras comerciais preservadas.
+===================================================== */
 
-:root{
-  --bg:#061326;
-  --surface:#0B1D34;
-  --surface-2:#102943;
-  --surface-3:#153653;
-  --graphite:#08182C;
+:root {
+  --navy: #0A1B32;
+  --navy-deep: #061326;
+  --navy-light: #142B49;
+  --blue: #087FE5;
+  --blue-soft: #EAF3FD;
+  --gold: #D7B65D;
+  --gold-dark: #A98232;
+  --gold-soft: #F8F1DE;
+  --silver: #D9E0E8;
+  --bg: #F3F6FA;
+  --white: #FFFFFF;
+  --text: #17263B;
+  --muted: #718096;
+  --line: #E2E8F0;
+  --success: #159653;
+  --danger: #DC5454;
 
-  --line:rgba(190,215,240,.11);
-  --line-strong:rgba(190,215,240,.22);
+  --radius: 20px;
+  --radius-sm: 13px;
 
-  --gold:#D7B65D;
-  --gold-light:#F3D98E;
-  --gold-dark:#A98232;
-  --gold-soft:rgba(215,182,93,.13);
+  --shadow:
+    0 8px 28px rgba(10,27,50,.055),
+    0 2px 6px rgba(10,27,50,.035);
 
-  --blue:#078BEE;
-  --blue-light:#35B5FF;
-  --blue-soft:rgba(7,139,238,.15);
+  --shadow-hover:
+    0 14px 35px rgba(10,27,50,.10);
 
-  --silver:#DCE5EF;
-  --text:#F7FAFF;
-  --muted:#91A7BF;
-
-  --success:#34D399;
-  --danger:#F87171;
-
-  --radius:18px;
-  --radius-sm:12px;
-
-  --shadow-elev:0 20px 60px -20px rgba(0,0,0,.72),0 2px 6px rgba(0,0,0,.35);
-  --shadow-gold:0 8px 30px -8px rgba(215,182,93,.35);
-
-  --grad-gold:linear-gradient(135deg,#F3D98E 0%,#D7B65D 55%,#A98232 100%);
-  --grad-blue:linear-gradient(135deg,#35B5FF 0%,#078BEE 55%,#07559C 100%);
-  --grad-surface:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0));
+  --font: 'Inter', sans-serif;
+  --brand-font: 'Michroma', sans-serif;
 }
 
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-html,body{
-  margin:0;
-  padding:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-  -webkit-font-smoothing:antialiased;
-  font-feature-settings:"cv11","ss01";
+html {
+  scroll-behavior: smooth;
 }
 
-body{
-  padding-top:env(safe-area-inset-top);
-  min-height:100vh;
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "cv11", "ss01";
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(8,127,229,.22);
+  outline-offset: 2px;
+}
+
+/* =====================================================
+   HEADER INSTITUCIONAL
+===================================================== */
+
+.header {
+  position: relative;
+  overflow: hidden;
+  padding: 20px 20px 30px;
   background:
-    radial-gradient(900px 500px at 50% -180px,rgba(7,139,238,.22),transparent 65%),
-    radial-gradient(700px 400px at 100% 100%,rgba(215,182,93,.08),transparent 65%),
-    linear-gradient(145deg,#061326 0%,#081B32 50%,#061326 100%);
+    radial-gradient(
+      circle at 90% 0%,
+      rgba(8,127,229,.22),
+      transparent 40%
+    ),
+    linear-gradient(135deg,var(--navy-deep),var(--navy) 65%,#102A4A);
+  color: white;
 }
 
-/* ==================================================
-   CABEÇALHO FELMOR
-================================================== */
-
-.header{
-  position:relative;
-  padding:28px 20px 23px;
-  text-align:center;
-  border-bottom:1px solid var(--line);
-  background:
-    radial-gradient(500px 160px at 50% 0%,rgba(7,139,238,.20),transparent 75%),
-    linear-gradient(180deg,rgba(12,35,61,.96),rgba(6,19,38,.94));
-  overflow:hidden;
-}
-
-.header:before{
-  content:"";
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:2px;
-  background:linear-gradient(90deg,transparent,var(--blue),var(--gold),var(--blue),transparent);
-}
-
-.header:after{
-  content:"";
-  position:absolute;
-  width:260px;
-  height:1px;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
-}
-
-.brand-mark{
-  width:58px;
-  height:58px;
-  margin:0 auto 11px;
-  border-radius:17px;
-  background:linear-gradient(145deg,#F3D98E 0%,#D7B65D 48%,#078BEE 100%);
-  display:grid;
-  place-items:center;
-  font-family:'Inter',sans-serif;
-  font-weight:800;
-  font-size:30px;
-  color:#061326;
+.header::before {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border: 1px solid rgba(215,182,93,.12);
+  border-radius: 50%;
+  right: -130px;
+  top: -155px;
   box-shadow:
-    0 0 28px rgba(215,182,93,.23),
-    0 0 24px rgba(7,139,238,.16),
-    inset 0 1px 0 rgba(255,255,255,.55);
-  letter-spacing:-2px;
-  position:relative;
+    0 0 0 22px rgba(215,182,93,.025),
+    0 0 0 45px rgba(215,182,93,.02);
 }
 
-.brand-name{
-  font-family:'Playfair Display',serif;
-  font-size:25px;
-  font-weight:700;
-  letter-spacing:3px;
-  background:var(--grad-gold);
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
-  text-shadow:0 4px 20px rgba(215,182,93,.10);
+.header-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
-.brand-sub{
-  font-size:10px;
-  letter-spacing:3.2px;
-  text-transform:uppercase;
-  color:var(--silver);
-  margin-top:7px;
-  font-weight:500;
-  opacity:.75;
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-/* ==================================================
-   CONTAINER
-================================================== */
-
-.app-container{
-  padding:22px 16px 145px;
-  max-width:520px;
-  margin:0 auto;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-/* ==================================================
-   CARDS
-================================================== */
-
-.card{
-  background:var(--surface);
-  background-image:var(--grad-surface);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  padding:17px;
-  margin-bottom:15px;
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-  box-shadow:var(--shadow-elev);
-  animation:fadeUp .5s cubic-bezier(.2,.8,.2,1) both;
-  position:relative;
-  overflow:hidden;
+.brand-mark {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: linear-gradient(145deg,#F4D98C,var(--gold),#A98232);
+  color: var(--navy);
+  font-family: var(--brand-font);
+  font-size: 20px;
+  font-weight: 900;
+  box-shadow: 0 5px 18px rgba(215,182,93,.25);
 }
 
-.card:before{
-  content:"";
-  position:absolute;
-  top:0;
-  left:18px;
-  right:18px;
-  height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);
-  pointer-events:none;
+.brand-name {
+  font-family: var(--brand-font);
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #FFFFFF;
 }
 
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(8px)}
-  to{opacity:1;transform:none}
+.brand-sub {
+  margin-top: 4px;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #B9C8D9;
+  text-transform: uppercase;
 }
 
-.card-label{
-  font-size:10px;
-  letter-spacing:2.2px;
-  text-transform:uppercase;
-  color:var(--silver);
-  opacity:.8;
-  font-weight:700;
-  margin-bottom:13px;
-  display:flex;
-  align-items:center;
-  gap:9px;
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 11px;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 30px;
+  background: rgba(255,255,255,.07);
+  color: #DCE8F4;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-.card-label:before{
-  content:"";
-  width:17px;
-  height:2px;
-  background:var(--grad-gold);
-  border-radius:2px;
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #36D399;
+  box-shadow: 0 0 8px rgba(54,211,153,.7);
 }
 
-/* ==================================================
-   ROTA — TIMELINE
-================================================== */
-
-.timeline{
-  position:relative;
-  padding-left:8px;
+.header-intro {
+  margin-top: 29px;
+  max-width: 600px;
 }
 
-.tl-line{
-  position:absolute;
-  left:18px;
-  top:24px;
-  bottom:24px;
-  width:2px;
-  background:linear-gradient(180deg,#22C55E,var(--gold),var(--blue));
-  opacity:.55;
+.header-intro h1 {
+  margin: 0;
+  font-size: clamp(25px,5vw,34px);
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -1.1px;
 }
 
-.tl-row{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:14px 12px 14px 0;
-  border-radius:14px;
-  cursor:pointer;
-  position:relative;
-  transition:background .25s ease,transform .15s ease;
+.header-intro p {
+  margin: 10px 0 0;
+  color: #C4D3E4;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
-.tl-row:hover{
-  background:rgba(255,255,255,.035);
+.header-accent {
+  width: 44px;
+  height: 3px;
+  margin-top: 17px;
+  border-radius: 5px;
+  background: var(--gold);
 }
 
-.tl-row:active{
-  transform:scale(.99);
+/* =====================================================
+   LAYOUT PRINCIPAL
+===================================================== */
+
+.app-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 20px 145px;
 }
 
-.tl-dot{
-  width:23px;
-  height:23px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  flex-shrink:0;
-  background:var(--surface-2);
-  border:2px solid;
-  position:relative;
-  z-index:1;
+.page-grid {
+  display: grid;
+  grid-template-columns: minmax(0,1.35fr) minmax(280px,.85fr);
+  gap: 20px;
+  align-items: start;
 }
 
-.tl-row.origem .tl-dot{
-  border-color:#22C55E;
-  box-shadow:0 0 0 4px rgba(34,197,94,.10);
+.main-column,
+.side-column {
+  min-width: 0;
 }
 
-.tl-row.parada .tl-dot{
-  border-color:var(--gold);
-  box-shadow:0 0 0 4px rgba(215,182,93,.12);
+.section-heading {
+  margin: 0 0 13px;
 }
 
-.tl-row.destino .tl-dot{
-  border-color:var(--blue);
-  box-shadow:0 0 0 4px rgba(7,139,238,.13);
+.section-heading h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -.4px;
+  color: var(--navy);
 }
 
-.tl-dot:after{
-  content:"";
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:currentColor;
+.section-heading p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
-.tl-row.origem .tl-dot:after{
-  background:#22C55E;
+.card {
+  padding: 19px;
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: var(--shadow);
+  animation: fadeUp .4s ease both;
 }
 
-.tl-row.parada .tl-dot:after{
-  background:var(--gold);
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.tl-row.destino .tl-dot:after{
-  background:var(--blue);
+.card-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 16px;
+  color: var(--navy);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
 }
 
-.tl-content{
-  flex:1;
-  min-width:0;
+.card-label i {
+  color: var(--blue);
+  font-size: 14px;
 }
 
-.tl-title{
-  font-size:10px;
-  letter-spacing:1.5px;
-  text-transform:uppercase;
-  color:var(--muted);
-  font-weight:700;
-  margin-bottom:4px;
+/* =====================================================
+   ROTA
+===================================================== */
+
+.route-card {
+  padding: 20px;
 }
 
-.tl-text{
-  font-size:15px;
-  font-weight:600;
-  color:var(--text);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+.timeline {
+  position: relative;
+  padding-left: 2px;
 }
 
-.tl-text.placeholder{
-  color:var(--muted);
-  font-weight:400;
+.tl-line {
+  position: absolute;
+  left: 16px;
+  top: 28px;
+  bottom: 28px;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    #21A66A,
+    var(--blue),
+    var(--gold)
+  );
+  opacity: .35;
 }
 
-.tl-chev{
-  color:var(--gold);
-  font-size:23px;
-  flex-shrink:0;
-  line-height:1;
+.tl-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 72px;
+  padding: 10px 9px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background .2s,border-color .2s,transform .15s;
 }
 
-.add-parada{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  margin:6px 0 0 38px;
-  font-size:13px;
-  color:var(--gold-light);
-  font-weight:600;
-  cursor:pointer;
-  padding:8px 11px;
-  border-radius:9px;
-  transition:background .2s;
+.tl-row:hover {
+  background: #F7F9FC;
+  border-color: #E8EDF4;
 }
 
-.add-parada:hover{
-  background:var(--gold-soft);
+.tl-row:active {
+  transform: scale(.99);
 }
 
-.add-parada.hide{
-  display:none;
+.tl-dot {
+  position: relative;
+  z-index: 1;
+  width: 31px;
+  height: 31px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #FFFFFF;
 }
 
-/* ==================================================
-   VALOR DA VIAGEM
-================================================== */
-
-.value-card{
-  position:relative;
-  background:
-    radial-gradient(600px 200px at 50% 0%,rgba(7,139,238,.19),transparent 70%),
-    radial-gradient(400px 150px at 50% 100%,rgba(215,182,93,.09),transparent 70%),
-    var(--surface);
-  border:1px solid rgba(215,182,93,.35);
-  text-align:center;
-  padding:25px 16px;
-  overflow:hidden;
+.tl-dot::after {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
 }
 
-.value-card:before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(135deg,transparent 40%,rgba(215,182,93,.06) 50%,transparent 60%);
-  pointer-events:none;
+.tl-row.origem .tl-dot::after {
+  background: #21A66A;
 }
 
-.value-card:after{
-  content:"";
-  position:absolute;
-  bottom:0;
-  left:20%;
-  right:20%;
-  height:1px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+.tl-row.parada .tl-dot::after {
+  background: var(--gold);
 }
 
-.value-label{
-  font-size:11px;
-  letter-spacing:2.5px;
-  text-transform:uppercase;
-  color:var(--silver);
-  opacity:.8;
-  font-weight:700;
-  margin-bottom:9px;
+.tl-row.destino .tl-dot::after {
+  background: var(--blue);
 }
 
-.value-amount{
-  font-family:'Playfair Display',serif;
-  font-size:43px;
-  font-weight:700;
-  letter-spacing:-1px;
-  background:var(--grad-gold);
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
-  filter:drop-shadow(0 2px 12px rgba(215,182,93,.28));
-  transition:transform .3s cubic-bezier(.2,.8,.2,1);
+.tl-row.origem .tl-dot {
+  border-color: rgba(33,166,106,.3);
 }
 
-.value-amount.pulse{
-  animation:pulse .5s ease;
+.tl-row.parada .tl-dot {
+  border-color: rgba(215,182,93,.5);
 }
 
-@keyframes pulse{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.04)}
-  100%{transform:scale(1)}
+.tl-row.destino .tl-dot {
+  border-color: rgba(8,127,229,.3);
 }
 
-/* ==================================================
+.tl-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.tl-title {
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+}
+
+.tl-text {
+  overflow: hidden;
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tl-text.placeholder {
+  color: #9AA6B5;
+  font-weight: 400;
+}
+
+.tl-chev {
+  flex-shrink: 0;
+  color: #91A0B2;
+  font-size: 19px;
+}
+
+.add-parada {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 9px 0 0 49px;
+  padding: 9px 12px;
+  border: 1px solid #DCEAF8;
+  border-radius: 10px;
+  background: var(--blue-soft);
+  color: #0871CA;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.add-parada:hover {
+  background: #DCEEFF;
+}
+
+.add-parada.hide {
+  display: none;
+}
+
+/* =====================================================
    VEÍCULO
-================================================== */
+===================================================== */
 
-.vehicle{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  background:linear-gradient(135deg,rgba(7,139,238,.10),rgba(16,41,67,.85));
-  border:1.5px solid rgba(215,182,93,.65);
-  border-radius:14px;
-  padding:14px 16px;
-  box-shadow:0 0 0 4px rgba(215,182,93,.06);
+.vehicle {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px;
+  border: 1px solid #DCE7F3;
+  border-radius: 15px;
+  background: linear-gradient(110deg,#F5F9FE,#FFFFFF);
 }
 
-.vehicle-icon{
-  width:46px;
-  height:46px;
-  border-radius:13px;
-  background:var(--grad-gold);
-  display:grid;
-  place-items:center;
-  font-size:23px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.4);
+.vehicle-icon {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: var(--navy);
+  color: var(--gold);
+  font-size: 21px;
 }
 
-.vehicle-info{
-  flex:1;
+.vehicle-info {
+  flex: 1;
+  min-width: 0;
 }
 
-.vehicle-name{
-  font-size:15px;
-  font-weight:700;
-  color:var(--text);
+.vehicle-name {
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 800;
 }
 
-.vehicle-desc{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:3px;
+.vehicle-desc {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
 }
 
-.vehicle-check{
-  color:var(--gold-light);
-  font-size:21px;
-  font-weight:700;
+.vehicle-check {
+  color: var(--blue);
+  font-size: 20px;
 }
 
-/* ==================================================
+/* =====================================================
+   VALOR
+===================================================== */
+
+.value-card {
+  position: relative;
+  overflow: hidden;
+  padding: 23px;
+  border: 1px solid rgba(215,182,93,.45);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(8,127,229,.2),
+      transparent 45%
+    ),
+    linear-gradient(135deg,var(--navy-deep),var(--navy) 75%);
+  color: #FFFFFF;
+  text-align: left;
+}
+
+.value-card::after {
+  content: "";
+  position: absolute;
+  right: -45px;
+  bottom: -90px;
+  width: 190px;
+  height: 190px;
+  border: 1px solid rgba(215,182,93,.18);
+  border-radius: 50%;
+  box-shadow: 0 0 0 20px rgba(215,182,93,.025);
+}
+
+.value-label {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 10px;
+  color: #D7B65D;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+.value-amount {
+  position: relative;
+  z-index: 1;
+  color: #FFFFFF;
+  font-size: clamp(33px,7vw,42px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  transition: transform .25s;
+}
+
+.value-amount.pulse {
+  animation: pulse .45s ease;
+}
+
+@keyframes pulse {
+  0% {transform:scale(1)}
+  50% {transform:scale(1.035)}
+  100% {transform:scale(1)}
+}
+
+.value-note {
+  position: relative;
+  z-index: 1;
+  margin-top: 8px;
+  color: #C4D3E4;
+  font-size: 11px;
+}
+
+/* =====================================================
    PAGAMENTO
-================================================== */
+===================================================== */
 
-.pay-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+.pay-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 10px;
 }
 
-.pay{
-  background:var(--surface-2);
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:15px 12px;
-  text-align:center;
-  cursor:pointer;
-  transition:all .2s cubic-bezier(.2,.8,.2,1);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:7px;
+.pay {
+  min-height: 82px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 8px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #FFFFFF;
+  cursor: pointer;
+  transition: .2s ease;
 }
 
-.pay:hover{
-  border-color:var(--line-strong);
-  transform:translateY(-1px);
+.pay:hover {
+  border-color: #B8D5F0;
+  background: #F7FBFF;
 }
 
-.pay-icon{
-  font-size:23px;
+.pay-icon {
+  color: var(--navy);
+  font-size: 21px;
 }
 
-.pay-name{
-  font-size:13px;
-  font-weight:600;
-  color:var(--text);
+.pay-name {
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
 }
 
-.pay.ativo{
-  background:linear-gradient(180deg,rgba(7,139,238,.19),rgba(7,139,238,.06));
-  border-color:var(--gold);
-  box-shadow:0 0 0 3px rgba(215,182,93,.09),inset 0 1px 0 rgba(255,255,255,.05);
+.pay.ativo {
+  border-color: var(--blue);
+  background: var(--blue-soft);
+  box-shadow: 0 0 0 2px rgba(8,127,229,.08);
 }
 
-.pay.ativo .pay-name{
-  color:var(--gold-light);
+.pay.ativo .pay-icon,
+.pay.ativo .pay-name {
+  color: #0871CA;
 }
 
-/* ==================================================
-   ADICIONAIS
-================================================== */
+/* =====================================================
+   ADICIONAIS E CAMPOS
+===================================================== */
 
-.addons{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+.addons {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 11px;
 }
 
-.field{
-  background:var(--surface-2);
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:11px 12px;
-  display:flex;
-  flex-direction:column;
-  gap:5px;
-  transition:border-color .2s,background .2s;
+.field {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #FAFBFD;
+  transition: border-color .2s,background .2s;
 }
 
-.field:focus-within{
-  border-color:var(--gold);
-  background:#132E4B;
+.field:focus-within {
+  border-color: var(--blue);
+  background: #FFFFFF;
 }
 
-.field-label{
-  font-size:10px;
-  letter-spacing:1.4px;
-  text-transform:uppercase;
-  color:var(--muted);
-  font-weight:700;
-  display:flex;
-  align-items:center;
-  gap:6px;
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #748297;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+}
+
+.field-label i {
+  color: var(--blue);
+  font-size: 12px;
 }
 
 .field select,
-.field input{
-  background:transparent;
-  border:none;
-  outline:none;
-  color:var(--text);
-  font-family:inherit;
-  font-size:14px;
-  font-weight:600;
-  padding:3px 0;
-  width:100%;
-  appearance:none;
-  -webkit-appearance:none;
+.field input {
+  width: 100%;
+  min-width: 0;
+  padding: 3px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--navy);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
-.field select option{
-  background:var(--surface);
-  color:var(--text);
+.field select option {
+  background: #FFFFFF;
+  color: var(--navy);
 }
 
-.field.full{
-  grid-column:1/-1;
+.field.full {
+  grid-column: 1/-1;
 }
 
-.field input[type=time]::-webkit-calendar-picker-indicator{
-  filter:invert(.8) sepia(1) saturate(5) hue-rotate(10deg);
-  cursor:pointer;
+.field input[type=time]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: .7;
 }
 
-/* ==================================================
-   BOTÃO DE SOLICITAÇÃO
-================================================== */
+/* =====================================================
+   BOTÃO FIXO DE SOLICITAÇÃO
+===================================================== */
 
-.cta-box{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  padding:15px 16px calc(15px + env(safe-area-inset-bottom));
-  background:linear-gradient(180deg,transparent,rgba(6,19,38,.94) 25%,#061326 65%);
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  z-index:50;
+.cta-box {
+  position: fixed;
+  z-index: 50;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 15px 20px calc(15px + env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(10,27,50,.07);
+  background: rgba(243,246,250,.94);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
-.cta-btn{
-  width:100%;
-  padding:18px;
-  border:none;
-  border-radius:15px;
-  background:var(--grad-gold);
-  color:#071426;
-  font-family:inherit;
-  font-weight:800;
-  font-size:15px;
-  letter-spacing:.5px;
-  cursor:pointer;
-  box-shadow:var(--shadow-gold),inset 0 1px 0 rgba(255,255,255,.5);
-  transition:transform .15s ease,box-shadow .2s ease;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
+.cta-inner {
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
 }
 
-.cta-btn:hover{
-  transform:translateY(-1px);
-  box-shadow:0 12px 36px -8px rgba(215,182,93,.48),inset 0 1px 0 rgba(255,255,255,.5);
+.cta-btn {
+  width: 100%;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 15px;
+  background: linear-gradient(110deg,#E7CA7B,var(--gold),#C6A34C);
+  color: var(--navy);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  box-shadow: 0 8px 22px rgba(169,130,50,.22);
+  transition: transform .15s,box-shadow .2s;
 }
 
-.cta-btn:active{
-  transform:scale(.98);
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(169,130,50,.3);
 }
 
-.cta-btn .wa{
-  font-size:19px;
+.cta-btn:active {
+  transform: scale(.985);
 }
 
-/* ==================================================
-   MODAL DE LOCALIZAÇÃO
-================================================== */
-
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:100;
-  background:rgba(0,0,0,.76);
-  backdrop-filter:blur(9px);
-  -webkit-backdrop-filter:blur(9px);
-  align-items:flex-end;
-  justify-content:center;
-  animation:fadeIn .25s ease;
+.cta-btn .wa {
+  font-size: 20px;
 }
 
-@keyframes fadeIn{
-  from{opacity:0}
-  to{opacity:1}
+/* =====================================================
+   MODAL DE SELEÇÃO DE LOCAL
+===================================================== */
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  background: rgba(4,15,30,.62);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  animation: fadeIn .2s ease;
 }
 
-.modal-content{
-  width:100%;
-  max-width:520px;
-  background:linear-gradient(180deg,#102943,#0B1D34);
-  border-top:1px solid rgba(215,182,93,.35);
-  border-radius:24px 24px 0 0;
-  padding:20px 16px calc(20px + env(safe-area-inset-bottom));
-  max-height:85vh;
-  display:flex;
-  flex-direction:column;
-  animation:slideUp .35s cubic-bezier(.2,.8,.2,1);
-  box-shadow:0 -20px 60px rgba(0,0,0,.6);
+@keyframes fadeIn {
+  from {opacity:0}
+  to {opacity:1}
 }
 
-@keyframes slideUp{
-  from{transform:translateY(100%)}
-  to{transform:none}
+.modal-content {
+  width: 100%;
+  max-width: 540px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 18px calc(20px + env(safe-area-inset-bottom));
+  border-radius: 24px 24px 0 0;
+  background: #FFFFFF;
+  box-shadow: 0 -15px 50px rgba(0,0,0,.2);
+  animation: slideUp .3s ease;
 }
 
-.modal-handle{
-  width:42px;
-  height:4px;
-  background:var(--line-strong);
-  border-radius:2px;
-  margin:-8px auto 16px;
+@keyframes slideUp {
+  from {transform:translateY(100%)}
+  to {transform:translateY(0)}
 }
 
-.modal input{
-  width:100%;
-  padding:15px 16px;
-  border-radius:12px;
-  background:var(--surface-2);
-  border:1px solid var(--line);
-  color:var(--text);
-  font-family:inherit;
-  font-size:15px;
-  outline:none;
-  margin-bottom:12px;
+.modal-handle {
+  width: 42px;
+  height: 4px;
+  margin: -7px auto 18px;
+  border-radius: 5px;
+  background: #D7DEE8;
 }
 
-.modal input:focus{
-  border-color:var(--gold);
-  box-shadow:0 0 0 3px rgba(215,182,93,.08);
+.modal-title {
+  margin: 0 0 13px;
+  color: var(--navy);
+  font-size: 17px;
+  font-weight: 800;
 }
 
-.modal input::placeholder{
-  color:var(--muted);
+.modal input {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 14px 15px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  outline: none;
+  background: #F6F8FB;
+  color: var(--navy);
+  font-family: var(--font);
+  font-size: 14px;
 }
 
-.lista{
-  overflow-y:auto;
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  gap:4px;
+.modal input:focus {
+  border-color: var(--blue);
+  background: #FFFFFF;
 }
 
-.lista div{
-  padding:15px 16px;
-  border-radius:11px;
-  cursor:pointer;
-  font-size:14px;
-  font-weight:500;
-  transition:background .15s;
-  border:1px solid transparent;
-  color:var(--silver);
+.lista {
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
-.lista div:hover{
-  background:var(--surface-2);
-  border-color:rgba(215,182,93,.25);
-  color:var(--gold-light);
+.lista div {
+  padding: 14px 13px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: .15s;
 }
 
-/* ==================================================
-   SCROLLBAR
-================================================== */
-
-::-webkit-scrollbar{
-  width:6px;
-  height:6px;
+.lista div:hover {
+  border-color: #DCEAF8;
+  background: #F1F7FD;
+  color: #0871CA;
 }
 
-::-webkit-scrollbar-thumb{
-  background:var(--line-strong);
-  border-radius:3px;
+/* =====================================================
+   RODAPÉ INSTITUCIONAL
+===================================================== */
+
+.footer {
+  padding: 8px 0 0;
+  color: #8794A5;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: uppercase;
 }
 
-::-webkit-scrollbar-track{
-  background:transparent;
+.footer strong {
+  color: var(--navy);
+  font-family: var(--brand-font);
+  font-size: 10px;
 }
 
-/* ==================================================
+/* =====================================================
    RESPONSIVIDADE
-================================================== */
+===================================================== */
 
-@media(max-width:380px){
-  .value-amount{
-    font-size:36px;
+@media(max-width:760px) {
+  .page-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
   }
 
-  .brand-name{
-    font-size:22px;
+  .app-container {
+    padding: 20px 15px 135px;
   }
 
-  .app-container{
-    padding-left:12px;
-    padding-right:12px;
+  .header {
+    padding: 18px 18px 27px;
   }
 
-  .card{
-    padding:14px;
+  .header-intro {
+    margin-top: 26px;
+  }
+
+  .side-column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .route-card {
+    padding: 17px;
+  }
+
+  .card {
+    padding: 17px;
+    margin-bottom: 13px;
   }
 }
 
-@media(min-width:600px){
-  .app-container{
-    padding-top:28px;
+@media(max-width:380px) {
+  .brand-name {
+    font-size: 15px;
   }
 
-  .header{
-    padding-top:32px;
-    padding-bottom:27px;
+  .brand-sub {
+    font-size: 8px;
+    letter-spacing: 1.4px;
   }
+
+  .status-pill {
+    padding: 7px 8px;
+    font-size: 9px;
+  }
+
+  .header-intro h1 {
+    font-size: 25px;
+  }
+
+  .addons {
+    gap: 8px;
+  }
+
+  .field {
+    padding: 10px;
+  }
+
+  .field select,
+  .field input {
+    font-size: 12px;
+  }
+}
+
+@media(min-width:761px) {
+  .header {
+    padding: 25px 30px 35px;
+  }
+
+  .app-container {
+    padding-top: 30px;
+  }
+
+  .side-column {
+    position: sticky;
+    top: 20px;
+  }
+
+  .cta-box {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: #CAD3DE;
 }
 </style>
 </head>
 
 <body>
 
-<!-- CABEÇALHO FELMOR -->
+<!-- =====================================================
+     CABEÇALHO FELMOR
+===================================================== -->
+
 <header class="header">
-  <div class="brand-mark">F</div>
-  <div class="brand-name">FELMOR</div>
-  <div class="brand-sub">Mobilidade • Conforto • Confiança</div>
+  <div class="header-inner">
+
+    <div class="brand-row">
+
+      <div class="brand">
+        <div class="brand-mark">F</div>
+
+        <div>
+          <div class="brand-name">FELMOR</div>
+          <div class="brand-sub">Mobilidade Particular</div>
+        </div>
+      </div>
+
+      <div class="status-pill">
+        <span class="status-dot"></span>
+        Atendimento particular
+      </div>
+
+    </div>
+
+    <div class="header-intro">
+      <h1>Para onde vamos?</h1>
+      <p>
+        Sua viagem com conforto, segurança e praticidade.
+        Informe seu trajeto e consulte o valor estimado.
+      </p>
+      <div class="header-accent"></div>
+    </div>
+
+  </div>
 </header>
+
+<!-- =====================================================
+     CONTEÚDO PRINCIPAL
+===================================================== -->
 
 <div class="app-container">
 
-  <!-- ROTA -->
-  <div class="card">
-    <div class="card-label">Sua Rota</div>
+  <div class="page-grid">
 
-    <div class="timeline">
-      <div class="tl-line"></div>
+    <!-- COLUNA PRINCIPAL -->
 
-      <div class="tl-row origem" id="origemBtn">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-title">Origem</div>
-          <div class="tl-text placeholder" id="origemTexto">Selecionar origem</div>
+    <main class="main-column">
+
+      <div class="section-heading">
+        <h2>Planeje sua viagem</h2>
+        <p>Escolha os locais de embarque e destino.</p>
+      </div>
+
+      <!-- ROTA -->
+
+      <div class="card route-card">
+
+        <div class="card-label">
+          <i class="fa-solid fa-route"></i>
+          Seu trajeto
         </div>
-        <div class="tl-chev">›</div>
-      </div>
 
-      <div class="tl-row parada" id="paradaBtn" style="display:none">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-title">Parada</div>
-          <div class="tl-text placeholder" id="paradaTexto">Selecionar parada</div>
+        <div class="timeline">
+
+          <div class="tl-line"></div>
+
+          <div class="tl-row origem" id="origemBtn">
+
+            <div class="tl-dot"></div>
+
+            <div class="tl-content">
+              <div class="tl-title">Local de partida</div>
+              <div class="tl-text placeholder" id="origemTexto">
+                Selecionar origem
+              </div>
+            </div>
+
+            <div class="tl-chev">›</div>
+
+          </div>
+
+          <div class="tl-row parada" id="paradaBtn" style="display:none">
+
+            <div class="tl-dot"></div>
+
+            <div class="tl-content">
+              <div class="tl-title">Parada intermediária</div>
+              <div class="tl-text placeholder" id="paradaTexto">
+                Selecionar parada
+              </div>
+            </div>
+
+            <div class="tl-chev">›</div>
+
+          </div>
+
+          <div class="tl-row destino" id="destinoBtn">
+
+            <div class="tl-dot"></div>
+
+            <div class="tl-content">
+              <div class="tl-title">Destino final</div>
+              <div class="tl-text placeholder" id="destinoTexto">
+                Selecionar destino
+              </div>
+            </div>
+
+            <div class="tl-chev">›</div>
+
+          </div>
+
         </div>
-        <div class="tl-chev">›</div>
-      </div>
 
-      <div class="tl-row destino" id="destinoBtn">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-title">Destino</div>
-          <div class="tl-text placeholder" id="destinoTexto">Selecionar destino</div>
+        <div class="add-parada" id="addParada">
+          <i class="fa-solid fa-circle-plus"></i>
+          Adicionar parada
         </div>
-        <div class="tl-chev">›</div>
-      </div>
-    </div>
 
-    <div class="add-parada" id="addParada">＋ Adicionar parada</div>
-  </div>
-
-  <!-- VEÍCULO -->
-  <div class="card">
-    <div class="card-label">Veículo</div>
-
-    <div class="vehicle">
-      <div class="vehicle-icon">🚗</div>
-
-      <div class="vehicle-info">
-        <div class="vehicle-name">Executivo</div>
-        <div class="vehicle-desc">4 lugares • Conforto premium</div>
       </div>
 
-      <div class="vehicle-check">✓</div>
-    </div>
+      <!-- VEÍCULO -->
 
-    <input type="hidden" id="tipoCarro" value="1">
-  </div>
+      <div class="card">
 
-  <!-- VALOR -->
-  <div class="card value-card">
-    <div class="value-label">Valor Estimado</div>
-    <div class="value-amount" id="previewTotal">R$ 0,00</div>
-  </div>
+        <div class="card-label">
+          <i class="fa-solid fa-car"></i>
+          Categoria da viagem
+        </div>
 
-  <!-- PAGAMENTO -->
-  <div class="card">
-    <div class="card-label">Pagamento</div>
+        <div class="vehicle">
 
-    <div class="pay-grid">
-      <div class="pay ativo" data="dinheiro">
-        <div class="pay-icon">💵</div>
-        <div class="pay-name">Dinheiro</div>
+          <div class="vehicle-icon">
+            <i class="fa-solid fa-car-side"></i>
+          </div>
+
+          <div class="vehicle-info">
+            <div class="vehicle-name">Executivo</div>
+            <div class="vehicle-desc">
+              4 lugares • Conforto e praticidade
+            </div>
+          </div>
+
+          <div class="vehicle-check">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+
+        </div>
+
+        <input type="hidden" id="tipoCarro" value="1">
+
       </div>
 
-      <div class="pay" data="pix">
-        <div class="pay-icon">⚡</div>
-        <div class="pay-name">PIX</div>
+      <!-- ADICIONAIS -->
+
+      <div class="card">
+
+        <div class="card-label">
+          <i class="fa-solid fa-plus-circle"></i>
+          Serviços adicionais
+        </div>
+
+        <div class="addons">
+
+          <label class="field">
+
+            <span class="field-label">
+              <i class="fa-solid fa-cart-shopping"></i>
+              Feira
+            </span>
+
+            <select id="feira">
+              <option value="0">Nenhuma</option>
+              <option value="4.99">1 carrinho</option>
+              <option value="7.99">2 carrinhos</option>
+            </select>
+
+          </label>
+
+          <label class="field">
+
+            <span class="field-label">
+              <i class="fa-solid fa-paw"></i>
+              Animal
+            </span>
+
+            <select id="animal">
+              <option value="0">Nenhum</option>
+              <option value="4.99">Pequeno</option>
+              <option value="7.99">Médio</option>
+              <option value="11.99">Grande</option>
+            </select>
+
+          </label>
+
+          <label class="field">
+
+            <span class="field-label">
+              <i class="fa-regular fa-clock"></i>
+              Espera (min)
+            </span>
+
+            <input
+              type="number"
+              id="espera"
+              placeholder="0"
+              min="0"
+            >
+
+          </label>
+
+          <label class="field">
+
+            <span class="field-label">
+              <i class="fa-solid fa-umbrella-beach"></i>
+              Saída praia
+            </span>
+
+            <select id="saidaPraia">
+              <option value="0">Não</option>
+              <option value="9.99">Sim</option>
+            </select>
+
+          </label>
+
+        </div>
+
       </div>
 
-      <div class="pay" data="credito">
-        <div class="pay-icon">💳</div>
-        <div class="pay-name">Crédito</div>
+      <!-- HORÁRIO -->
+
+      <div class="card">
+
+        <div class="card-label">
+          <i class="fa-regular fa-clock"></i>
+          Horário de embarque
+        </div>
+
+        <label class="field full">
+
+          <span class="field-label">
+            <i class="fa-regular fa-calendar"></i>
+            Horário previsto
+          </span>
+
+          <input type="time" id="embarque">
+
+        </label>
+
       </div>
 
-      <div class="pay" data="debito">
-        <div class="pay-icon">🏧</div>
-        <div class="pay-name">Débito</div>
+    </main>
+
+    <!-- COLUNA LATERAL -->
+
+    <aside class="side-column">
+
+      <!-- VALOR -->
+
+      <div class="card value-card">
+
+        <div class="value-label">
+          Valor estimado da viagem
+        </div>
+
+        <div class="value-amount" id="previewTotal">
+          R$ 0,00
+        </div>
+
+        <div class="value-note">
+          O valor será atualizado conforme suas escolhas.
+        </div>
+
       </div>
-    </div>
-  </div>
 
-  <!-- ADICIONAIS -->
-  <div class="card">
-    <div class="card-label">Adicionais</div>
+      <!-- PAGAMENTO -->
 
-    <div class="addons">
-      <label class="field">
-        <span class="field-label">🛒 Feira</span>
-        <select id="feira">
-          <option value="0">Nenhuma</option>
-          <option value="4.99">1 carrinho</option>
-          <option value="7.99">2 carrinhos</option>
-        </select>
-      </label>
+      <div class="card">
 
-      <label class="field">
-        <span class="field-label">🐶 Animal</span>
-        <select id="animal">
-          <option value="0">Nenhum</option>
-          <option value="4.99">Pequeno</option>
-          <option value="7.99">Médio</option>
-          <option value="11.99">Grande</option>
-        </select>
-      </label>
+        <div class="card-label">
+          <i class="fa-solid fa-wallet"></i>
+          Forma de pagamento
+        </div>
 
-      <label class="field">
-        <span class="field-label">⏱️ Espera (min)</span>
-        <input type="number" id="espera" placeholder="0" min="0">
-      </label>
+        <div class="pay-grid">
 
-      <label class="field">
-        <span class="field-label">⛱️ Saída Praia</span>
-        <select id="saidaPraia">
-          <option value="0">Não</option>
-          <option value="9.99">Sim</option>
-        </select>
-      </label>
-    </div>
-  </div>
+          <div class="pay ativo" data="dinheiro">
+            <div class="pay-icon">
+              <i class="fa-solid fa-money-bill-wave"></i>
+            </div>
+            <div class="pay-name">Dinheiro</div>
+          </div>
 
-  <!-- HORÁRIO -->
-  <div class="card">
-    <div class="card-label">Horário de Embarque</div>
+          <div class="pay" data="pix">
+            <div class="pay-icon">
+              <i class="fa-brands fa-pix"></i>
+            </div>
+            <div class="pay-name">PIX</div>
+          </div>
 
-    <label class="field full">
-      <span class="field-label">🕐 Horário</span>
-      <input type="time" id="embarque">
-    </label>
+          <div class="pay" data="credito">
+            <div class="pay-icon">
+              <i class="fa-regular fa-credit-card"></i>
+            </div>
+            <div class="pay-name">Crédito</div>
+          </div>
+
+          <div class="pay" data="debito">
+            <div class="pay-icon">
+              <i class="fa-solid fa-credit-card"></i>
+            </div>
+            <div class="pay-name">Débito</div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="footer">
+        <strong>FELMOR</strong>
+        <div style="margin-top:7px">
+          Mobilidade com excelência
+        </div>
+      </div>
+
+    </aside>
+
   </div>
 
 </div>
 
-<!-- BOTÃO DE SOLICITAÇÃO -->
+<!-- =====================================================
+     BOTÃO FIXO
+===================================================== -->
+
 <div class="cta-box">
-  <button class="cta-btn" id="btnContinuar">
-    <span class="wa">📱</span>
-    <span>Solicitar Viagem</span>
-  </button>
+
+  <div class="cta-inner">
+
+    <button class="cta-btn" id="btnContinuar">
+
+      <span class="wa">
+        <i class="fa-brands fa-whatsapp"></i>
+      </span>
+
+      <span>Solicitar viagem</span>
+
+      <i class="fa-solid fa-arrow-right"></i>
+
+    </button>
+
+  </div>
+
 </div>
 
-<!-- MODAL DE SELEÇÃO -->
+<!-- =====================================================
+     MODAL DE LOCAIS
+===================================================== -->
+
 <div class="modal" id="modal">
+
   <div class="modal-content">
+
     <div class="modal-handle"></div>
-    <input type="text" id="busca" placeholder="Buscar local...">
+
+    <h3 class="modal-title">Selecione um local</h3>
+
+    <input
+      type="text"
+      id="busca"
+      placeholder="Buscar local..."
+      autocomplete="off"
+    >
+
     <div class="lista" id="lista"></div>
+
   </div>
+
 </div>
+
+<!-- =====================================================
+     LÓGICA ORIGINAL DA CALCULADORA
+     Mantidos DataManager, tarifas, adicionais,
+     regras de cálculo e integração WhatsApp.
+===================================================== -->
 
 <script>
 
@@ -986,221 +1395,326 @@ const saidaPraia = document.getElementById("saidaPraia");
 const embarque = document.getElementById("embarque");
 const tipoCarro = document.getElementById("tipoCarro");
 
-let origem=null, destino=null, parada=null, modo=null, pagamento="dinheiro", listaAtual=[];
+let origem = null;
+let destino = null;
+let parada = null;
+let modo = null;
+let pagamento = "dinheiro";
+let listaAtual = [];
 
 (async()=>{
   await DataManager.carregar();
 })();
 
 function abrirModal(tipo){
+
   modo = tipo;
   busca.value = "";
 
   let dados = [];
 
-  if(tipo==="origem") dados = DataManager.listarOrigens();
-
-  if(tipo==="parada"){
-    if(!origem) return alert("Selecione origem");
-    dados = DataManager.listarDestinos(origem);
+  if(tipo === "origem"){
+    dados = DataManager.listarOrigens();
   }
 
-  if(tipo==="destino"){
+  if(tipo === "parada"){
+
     if(!origem) return alert("Selecione origem");
-    dados = parada ? DataManager.listarDestinos(parada) : DataManager.listarDestinos(origem);
+
+    dados = DataManager.listarDestinos(origem);
+
+  }
+
+  if(tipo === "destino"){
+
+    if(!origem) return alert("Selecione origem");
+
+    dados = parada
+      ? DataManager.listarDestinos(parada)
+      : DataManager.listarDestinos(origem);
+
   }
 
   listaAtual = dados;
+
   renderLista(dados);
-  modal.style.display="flex";
+
+  modal.style.display = "flex";
+
 }
 
 function renderLista(arr){
-  lista.innerHTML="";
+
+  lista.innerHTML = "";
 
   arr.forEach(item=>{
-    const div=document.createElement("div");
-    div.innerText=item;
-    div.onclick=()=>{
+
+    const div = document.createElement("div");
+
+    div.innerText = item;
+
+    div.onclick = ()=>{
+
       selecionar(item);
-      modal.style.display="none";
+
+      modal.style.display = "none";
+
     };
+
     lista.appendChild(div);
+
   });
+
 }
 
 modal.addEventListener("click",(e)=>{
-  if(e.target===modal) modal.style.display="none";
+
+  if(e.target === modal){
+    modal.style.display = "none";
+  }
+
 });
 
 busca.addEventListener("input",()=>{
+
   const t = busca.value.toLowerCase();
-  renderLista(listaAtual.filter(i=>i.toLowerCase().includes(t)));
+
+  renderLista(
+    listaAtual.filter(i=>i.toLowerCase().includes(t))
+  );
+
 });
 
 function selecionar(valor){
 
-  if(modo==="origem"){
-    origem=valor;
-    parada=null;
-    destino=null;
+  if(modo === "origem"){
 
-    origemTexto.innerText=valor;
+    origem = valor;
+    parada = null;
+    destino = null;
+
+    origemTexto.innerText = valor;
     origemTexto.classList.remove("placeholder");
 
-    destinoTexto.innerText="Selecionar destino";
+    destinoTexto.innerText = "Selecionar destino";
     destinoTexto.classList.add("placeholder");
 
-    paradaBtn.style.display="none";
+    paradaBtn.style.display = "none";
+
   }
 
-  if(modo==="parada"){
-    parada=valor;
-    destino=null;
+  if(modo === "parada"){
 
-    paradaTexto.innerText=valor;
+    parada = valor;
+    destino = null;
+
+    paradaTexto.innerText = valor;
     paradaTexto.classList.remove("placeholder");
+
   }
 
-  if(modo==="destino"){
-    destino=valor;
+  if(modo === "destino"){
 
-    destinoTexto.innerText=valor;
+    destino = valor;
+
+    destinoTexto.innerText = valor;
     destinoTexto.classList.remove("placeholder");
+
   }
 
   calcular();
+
 }
 
-origemBtn.onclick=()=>abrirModal("origem");
-destinoBtn.onclick=()=>abrirModal("destino");
-paradaBtn.onclick=()=>abrirModal("parada");
+origemBtn.onclick = ()=>abrirModal("origem");
 
-addParada.onclick=()=>{
+destinoBtn.onclick = ()=>abrirModal("destino");
+
+paradaBtn.onclick = ()=>abrirModal("parada");
+
+addParada.onclick = ()=>{
+
   if(!origem) return alert("Selecione origem");
 
-  paradaBtn.style.display="flex";
+  paradaBtn.style.display = "flex";
+
   addParada.classList.add("hide");
+
 };
 
 document.querySelectorAll(".pay").forEach(p=>{
-  p.onclick=()=>{
-    document.querySelectorAll(".pay").forEach(x=>x.classList.remove("ativo"));
+
+  p.onclick = ()=>{
+
+    document.querySelectorAll(".pay").forEach(x=>{
+      x.classList.remove("ativo");
+    });
 
     p.classList.add("ativo");
-    pagamento=p.getAttribute("data");
+
+    pagamento = p.getAttribute("data");
 
     calcular();
+
   };
+
 });
 
 ["feira","animal","espera","saidaPraia","embarque"].forEach(id=>{
-  const el=document.getElementById(id);
+
+  const el = document.getElementById(id);
 
   el.addEventListener("change",calcular);
+
   el.addEventListener("input",calcular);
+
 });
 
 function calcular(){
 
   if(!origem || !destino){
-    previewTotal.innerText="R$ 0,00";
+
+    previewTotal.innerText = "R$ 0,00";
+
     return;
+
   }
 
   let base = !parada
     ? DataManager.buscarValor(origem,destino)||0
-    : (DataManager.buscarValor(origem,parada)||0) + (DataManager.buscarValor(parada,destino)||0);
+    : (DataManager.buscarValor(origem,parada)||0) +
+      (DataManager.buscarValor(parada,destino)||0);
 
-  let taxas = Number(feira.value||0)+Number(animal.value||0)+Number(saidaPraia.value||0);
+  let taxas =
+    Number(feira.value||0) +
+    Number(animal.value||0) +
+    Number(saidaPraia.value||0);
 
   const esperaVal = Number(espera.value||0);
 
-  if(esperaVal>5){
+  if(esperaVal > 5){
+
     taxas += 3 + ((esperaVal-5)*0.6);
+
   }
 
   if(embarque.value){
-    const [h,m]=embarque.value.split(":").map(Number);
+
+    const [h,m] = embarque.value.split(":").map(Number);
+
     const min = h*60 + m;
 
     if(min >= 1350 || min < 300){
+
       taxas += base <= 24.99 ? 5 : base * 0.35;
+
     }
+
   }
 
-  let total=(base+taxas)*Number(tipoCarro.value||1);
+  let total = (base+taxas)*Number(tipoCarro.value||1);
 
-  if(pagamento==="credito") total/=0.95;
-  if(pagamento==="debito") total/=0.98;
+  if(pagamento === "credito") total /= 0.95;
 
-  previewTotal.innerText="R$ "+total.toFixed(2);
+  if(pagamento === "debito") total /= 0.98;
+
+  previewTotal.innerText = "R$ " + total.toFixed(2);
 
   previewTotal.classList.remove("pulse");
+
   void previewTotal.offsetWidth;
+
   previewTotal.classList.add("pulse");
+
 }
 
 document.getElementById("btnContinuar").onclick = ()=>{
 
   if(!origem || !destino){
+
     return alert("Selecione origem e destino");
+
   }
 
   let base = !parada
     ? DataManager.buscarValor(origem,destino)||0
-    : (DataManager.buscarValor(origem,parada)||0) + (DataManager.buscarValor(parada,destino)||0);
+    : (DataManager.buscarValor(origem,parada)||0) +
+      (DataManager.buscarValor(parada,destino)||0);
 
-  let taxas = 0, detalhes = "";
+  let taxas = 0;
+  let detalhes = "";
 
   const feiraVal = Number(feira.value||0);
   const animalVal = Number(animal.value||0);
   const praiaVal = Number(saidaPraia.value||0);
   const esperaVal = Number(espera.value||0);
 
-  if(feiraVal>0){
-    taxas+=feiraVal;
-    detalhes+=`🛒 Feira: R$ ${feiraVal.toFixed(2)}\n`;
+  if(feiraVal > 0){
+
+    taxas += feiraVal;
+
+    detalhes += `🛒 Feira: R$ ${feiraVal.toFixed(2)}\n`;
+
   }
 
-  if(animalVal>0){
-    taxas+=animalVal;
-    detalhes+=`🐶 Animal: R$ ${animalVal.toFixed(2)}\n`;
+  if(animalVal > 0){
+
+    taxas += animalVal;
+
+    detalhes += `🐶 Animal: R$ ${animalVal.toFixed(2)}\n`;
+
   }
 
-  if(praiaVal>0){
-    taxas+=praiaVal;
-    detalhes+=`⛱️ Praia: R$ ${praiaVal.toFixed(2)}\n`;
+  if(praiaVal > 0){
+
+    taxas += praiaVal;
+
+    detalhes += `⛱️ Praia: R$ ${praiaVal.toFixed(2)}\n`;
+
   }
 
-  if(esperaVal>5){
+  if(esperaVal > 5){
+
     const esperaCalc = 3 + ((esperaVal-5)*0.6);
-    taxas+=esperaCalc;
-    detalhes+=`⏱️ Espera: R$ ${esperaCalc.toFixed(2)}\n`;
+
+    taxas += esperaCalc;
+
+    detalhes += `⏱️ Espera: R$ ${esperaCalc.toFixed(2)}\n`;
+
   }
 
   if(embarque.value){
-    const [h,m]=embarque.value.split(":").map(Number);
-    const min=h*60+m;
 
-    if(min>=1350 || min<300){
+    const [h,m] = embarque.value.split(":").map(Number);
+
+    const min = h*60+m;
+
+    if(min >= 1350 || min < 300){
+
       const adicional = base <= 24.99 ? 5 : base*0.35;
-      taxas+=adicional;
-      detalhes+=`🌙 Noturno: R$ ${adicional.toFixed(2)}\n`;
+
+      taxas += adicional;
+
+      detalhes += `🌙 Noturno: R$ ${adicional.toFixed(2)}\n`;
+
     }
+
   }
 
-  let total = (base + taxas) * Number(tipoCarro.value||1);
+  let total = (base+taxas)*Number(tipoCarro.value||1);
 
-  if(pagamento==="credito") total/=0.95;
-  if(pagamento==="debito") total/=0.98;
+  if(pagamento === "credito") total /= 0.95;
+
+  if(pagamento === "debito") total /= 0.98;
 
   let msg = `🚖 *FELMOR - Solicitação de Viagem*\n\n`;
 
   msg += `📍 Origem:\n${origem}\n\n`;
 
   if(parada){
+
     msg += `🛑 Parada:\n${parada}\n\n`;
+
   }
 
   msg += `🏁 Destino:\n${destino}\n\n`;
@@ -1217,7 +1731,10 @@ document.getElementById("btnContinuar").onclick = ()=>{
 
   msg += `💰 *Total: R$ ${total.toFixed(2)}*`;
 
-  window.open(`https://wa.me/5581989823239?text=${encodeURIComponent(msg)}`);
+  window.open(
+    `https://wa.me/5581989823239?text=${encodeURIComponent(msg)}`
+  );
+
 };
 
 </script>
